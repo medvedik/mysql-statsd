@@ -90,7 +90,6 @@ class ThreadMySQL(ThreadBase):
                 for key, value in rows:
                     metric_key = check_type+"."+key.lower()
                     metric_type = self.metrics.get(metric_key)
-
                     # Only allow the whitelisted metrics to be sent off to Statsd
                     if metric_key in self.metrics:
                         self.queue.put((metric_key, value, metric_type))

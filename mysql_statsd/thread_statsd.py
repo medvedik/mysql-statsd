@@ -25,6 +25,11 @@ class ThreadGenerateGarbage(ThreadBase):
 
 
 class ThreadStatsd(ThreadBase):
+    def __init__(self,queue,**kwargs):
+        super(ThreadStatsd,self).__init__(queue,**kwargs)
+        self.old_values={}
+        self.last_update={}
+
     def configure(self, config):
         host = config.get('host', 'localhost')
         port = int(config.get('port', 8125))
@@ -43,8 +48,27 @@ class ThreadStatsd(ThreadBase):
         elif t is 't':
             return self.client.timing
 
+    def calculate_delta(self,key,value):
+        ct=time.time()
+        try:
+            ot=self.last_update[key]
+            old_value=self.old_values[key]
+            val=(float(value)-old_value)/(ct-ot)
+        except Exception,e:
+            val=0
+        finally:
+            self.last_update[key]=ct
+            self.old_values[key]=float(value)
+            return val
+
     def send_stat(self, item):
         (k, v, t) = item
+        try:
+            if t[1]=='d':
+                v=self.calculate_delta(k,v)
+                t=t[0]
+        except:
+            pass
         sender = self.get_sender(t)
         sender(k, float(v))
 
