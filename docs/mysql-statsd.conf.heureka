@@ -1,0 +1,52 @@
+[daemon] 
+logfile = /tmp/mysql_statsd_daemon.log
+#pidfile = /var/run/mysql_statsd.pid
+pidfile = /tmp/mysql_statsd.pid
+
+
+[statsd] 
+host = localhost
+port = 8125
+prefix = 
+include_hostname = true 
+
+[mysql] 
+username = 
+password = 
+host = localhost
+stats_types = status,variables,innodb,commit 
+query_variables = SHOW GLOBAL VARIABLES
+interval_variables = 1000
+query_status = SHOW GLOBAL STATUS 
+interval_status = 1000
+query_innodb = SHOW ENGINE INNODB STATUS 
+interval_innodb = 1000
+query_commit = COMMIT 
+interval_commit = 1000 
+sleep_interval = 500 
+
+[metrics] 
+#variables.read_only = g
+status.max_used_connections = g 
+status.connections = gd
+status.max_used_connections = g
+status.threads_connected = g
+status.innodb_num_open_files = g
+status.innodb_rows_read = gd
+status.innodb_rows_deleted = gd
+#status.innodb_rows_inserted = gd
+status.innodb_rows_inserted = rd
+status.innodb_rows_updated = gd
+status.innodb_data_fsyncs = gd
+status.innodb_history_list_length = g
+status.innodb_pages_created = gd
+status.innodb_pages_read = gd
+status.innodb_pages_written = gd
+status.innodb_buffer_pool_pages_dirty = g
+status.innodb_buffer_pool_pages_free = g
+status.innodb_buffer_pool_pages_data = g
+status.innodb_buffer_pool_pages_made_young = gd
+status.innodb_buffer_pool_pages_not_young = gd
+#status. = g
+status.slow_queries = gd
+status.queries = gd
